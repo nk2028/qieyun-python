@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from os import path, system
+from os import path
 from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
 assert path.exists(path.join(here, 'src/Qieyun/qieyun.csv')), \
-    'Please run prepare.sh first.'
+    'Please run prepare.py first.'
 
-with open(path.join(here, 'README.md'), encoding='utf8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-with open(path.join(here, 'src/Qieyun/version.py'), encoding='utf8') as f:
+with open(path.join(here, 'src/Qieyun/version.py'), encoding='utf-8') as f:
     exec(f.read())
 
 setup(
@@ -31,6 +31,7 @@ setup(
         'Natural Language :: Chinese (Traditional)',
         'License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -41,7 +42,7 @@ setup(
     package_data={
         'Qieyun': ['qieyun.csv'],
     },
-    python_requires='>=3.7, <4',
+    python_requires='>=3.6, <4',
     entry_points={},
     project_urls={
         'Bug Reports': 'https://github.com/nk2028/qieyun-python/issues',

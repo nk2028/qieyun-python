@@ -48,7 +48,7 @@ d描述2反切 = {}
 d描述字頭2特殊反切 = {}
 
 # Initialize dictionaries
-with open(path.join(HERE, 'qieyun.csv'), encoding='utf8') as f:
+with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
     next(f) # skip header
     for line in f:
         描述, 反切, 字頭, 解釋 = line.rstrip('\n').split(',')

@@ -15,10 +15,12 @@ jobs:
         python-version: '3.9'
     - name: Upgrade pip
       run: python -m pip install --upgrade pip
+    - name: Install packaging tools
+      run: pip install setuptools wheel twine
     - name: Install pdoc
       run: pip install pdoc3
     - name: Prepare data
-      run: ./prepare.sh
+      run: python prepare.py
     - name: Install package
       run: pip install .
     - name: Build documentation
