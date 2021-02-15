@@ -37,7 +37,7 @@ jobs:
 
         # Switch branch
         git fetch
-        git checkout gh-pages
+        git reset --hard gh-pages
         )
 
         (
