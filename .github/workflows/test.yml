@@ -26,6 +26,8 @@ jobs:
       run: pip install pytest
 #    - name: Install Pylint
 #      run: pip install pylint
+    - name: Prepare data
+      run: ./prepare.sh
     - name: Install package
       run: pip install .
     - name: Test
