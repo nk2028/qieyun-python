@@ -23,8 +23,7 @@ HERE = path.abspath(path.dirname(__file__))
 重紐母 = '幫滂並明見溪羣疑影曉'
 重紐韻 = '支脂祭眞仙宵清侵鹽'
 
-# Not used, just for the completeness:
-# 開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登'
+開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登'
 必為開口的韻 = '咍痕欣嚴之魚臻蕭宵肴豪侯侵覃談鹽添咸銜'
 必為合口的韻 = '灰魂文凡'
 開合中立的韻 = '東冬鍾江虞模尤幽'
@@ -38,7 +37,7 @@ HERE = path.abspath(path.dirname(__file__))
 一三等韻 = '東歌'
 二三等韻 = '麻庚'
 
-解析音韻描述 = re.compile('([%s])([%s]?)([%s])([%s]?)([%s])([%s])' % (所有母, 所有呼, 所有等, 所有重紐, 所有韻, 所有聲))
+解析音韻描述 = re.compile('([%s])([%s]?)([%s]?)([%s]?)([%s])([%s])' % (所有母, 所有呼, 所有等, 所有重紐, 所有韻, 所有聲))
 
 # dict
 
@@ -149,6 +148,27 @@ class 音韻地位:
         ```
         '''
         return self.母 + (self.呼 or '') + self.等 + (self.重紐 or '') + self.韻 + self.聲
+
+    @property
+    def 最簡描述(self):
+        '''
+        最簡音韻描述。
+
+        ```python
+        >>> Qieyun.音韻地位.from描述('幫三凡入').最簡描述
+        '幫凡入'
+        >>> Qieyun.音韻地位.from描述('羣開三A支平').最簡描述
+        '羣開A支平'
+        ```
+        '''
+        呼 = self.呼
+        等 = self.等
+        韻 = self.韻
+        if 韻 not in 開合皆有的韻:
+            呼 = None
+        if 韻 not in 一三等韻 and 韻 not in 二三等韻:
+            等 = None
+        return self.母 + (呼 or '') + (等 or '') + (self.重紐 or '') + 韻 + self.聲
 
     @property
     def 表達式(self):
@@ -393,17 +413,27 @@ class 音韻地位:
     @staticmethod
     def from描述(描述: str):
         '''
-        將音韻描述轉換為音韻地位。
+        將音韻描述或最簡音韻描述轉換為音韻地位。
         '''
         match = 解析音韻描述.fullmatch(描述)
         assert match is not None
 
         母 = match.group(1)
         呼 = match.group(2) or None
-        等 = match.group(3)
+        等 = match.group(3) or None
         重紐 = match.group(4) or None
         韻 = match.group(5)
         聲 = match.group(6)
+
+        if 呼 is None and 母 not in '幫滂並明':
+            if 韻 in 必為開口的韻: 呼 = '開'
+            elif 韻 in 必為合口的韻: 呼 = '合'
+
+        if 等 is None:
+            if 韻 in 一等韻: 等 = '一'
+            elif 韻 in 二等韻: 等 = '二'
+            elif 韻 in 三等韻: 等 = '三'
+            elif 韻 in 四等韻: 等 = '四'
 
         音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲)
 
