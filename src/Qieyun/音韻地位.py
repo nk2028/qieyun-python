@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from os import path
 import re
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from .拓展音韻屬性 import 母到清濁, 母到音, 母到組, 韻到攝
+from .書影 import 生成縮略圖, 生成書影
 
 HERE = path.abspath(path.dirname(__file__))
 
@@ -39,32 +40,12 @@ HERE = path.abspath(path.dirname(__file__))
 
 解析音韻描述 = re.compile('([%s])([%s]?)([%s]?)([%s]?)([%s])([%s])' % (所有母, 所有呼, 所有等, 所有重紐, 所有韻, 所有聲))
 
-# dict
+# 底層資料結構
 
-d字頭2描述解釋 = defaultdict(list)
-d描述2字頭解釋 = defaultdict(list)
-d描述2反切 = {}
-d描述字頭2特殊反切 = {}
+條目 = namedtuple('條目', ['音韻地位', '出處'])
+出處 = namedtuple('出處', ['資料名稱', '韻部原貌', '反切', '釋義', '縮略圖', '書影'])
 
-# Initialize dictionaries
-with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
-    next(f) # skip header
-    for line in f:
-        描述, 反切, 字頭, 解釋 = line.rstrip('\n').split(',')
-
-        if not 反切:
-            反切 = None # 處理無反切的小韻
-
-        d描述2字頭解釋[描述].append((字頭, 解釋))
-        d字頭2描述解釋[字頭].append((描述, 解釋))
-
-        原反切 = d描述2反切.get(描述)
-        if 原反切 is None:
-            d描述2反切[描述] = 反切
-        elif 原反切 == 反切:
-            pass
-        else:
-            d描述字頭2特殊反切[描述, 字頭] = 反切 # 處理同一個音韻地位對應兩個反切的情況
+# 「音韻地位」物件
 
 class 音韻地位:
     '''《切韻》音系音韻地位。'''
@@ -80,9 +61,9 @@ class 音韻地位:
         self.聲 = 聲
 
     @property
-    def 清濁(self):
+    def 清濁(self) -> str:
         '''
-        清濁。
+        清濁（全清、次清、全濁、次濁）。
 
         ```python
         >>> Qieyun.音韻地位.from描述('幫三凡入').清濁
@@ -94,9 +75,9 @@ class 音韻地位:
         return 母到清濁[self.母]
 
     @property
-    def 音(self):
+    def 音(self) -> str:
         '''
-        音。
+        音（脣音、舌音、齒音、牙音、喉音）。
 
         ```python
         >>> Qieyun.音韻地位.from描述('幫三凡入').音
@@ -108,7 +89,7 @@ class 音韻地位:
         return 母到音[self.母]
 
     @property
-    def 組(self):
+    def 組(self) -> Optional[str]:
         '''
         組。
 
@@ -122,7 +103,7 @@ class 音韻地位:
         return 母到組[self.母]
 
     @property
-    def 攝(self):
+    def 攝(self) -> str:
         '''
         攝。
 
@@ -136,7 +117,7 @@ class 音韻地位:
         return 韻到攝[self.韻]
 
     @property
-    def 描述(self):
+    def 描述(self) -> str:
         '''
         音韻描述。
 
@@ -147,10 +128,17 @@ class 音韻地位:
         '羣開三A支平'
         ```
         '''
-        return self.母 + (self.呼 or '') + self.等 + (self.重紐 or '') + self.韻 + self.聲
+        母 = self.母
+        呼 = self.呼
+        等 = self.等
+        重紐 = self.重紐
+        韻 = self.韻
+        聲 = self.聲
+
+        return 母 + (呼 or '') + 等 + (重紐 or '') + 韻 + 聲
 
     @property
-    def 最簡描述(self):
+    def 最簡描述(self) -> str:
         '''
         最簡音韻描述。
 
@@ -161,17 +149,22 @@ class 音韻地位:
         '羣開A支平'
         ```
         '''
+        母 = self.母
         呼 = self.呼
         等 = self.等
+        重紐 = self.重紐
         韻 = self.韻
+        聲 = self.聲
+
         if 韻 not in 開合皆有的韻:
             呼 = None
         if 韻 not in 一三等韻 and 韻 not in 二三等韻:
             等 = None
-        return self.母 + (呼 or '') + (等 or '') + (self.重紐 or '') + 韻 + self.聲
+
+        return 母 + (呼 or '') + (等 or '') + (重紐 or '') + 韻 + 聲
 
     @property
-    def 表達式(self):
+    def 表達式(self) -> str:
         '''
         音韻表達式。
 
@@ -182,12 +175,51 @@ class 音韻地位:
         '羣母 開口 三等 重紐A類 支韻 平聲'
         ```
         '''
-        呼字段 = f'{self.呼}口 ' if self.呼 else ''
-        重紐字段 = f'重紐{self.重紐}類 ' if self.重紐 else ''
-        return f'{self.母}母 {呼字段}{self.等}等 {重紐字段}{self.韻}韻 {self.聲}聲'
+        母 = self.母
+        呼 = self.呼
+        等 = self.等
+        重紐 = self.重紐
+        韻 = self.韻
+        聲 = self.聲
+
+        呼字段 = f'{呼}口 ' if 呼 else ''
+        重紐字段 = f'重紐{重紐}類 ' if 重紐 else ''
+
+        return f'{母}母 {呼字段}{等}等 {重紐字段}{韻}韻 {聲}聲'
 
     @property
-    def 編碼(self):
+    def 最簡表達式(self) -> str:
+        '''
+        最簡音韻表達式。
+
+        ```python
+        >>> Qieyun.音韻地位.from描述('幫三凡入').最簡表達式
+        '幫母 凡韻 入聲'
+        >>> Qieyun.音韻地位.from描述('羣開三A支平').最簡表達式
+        '羣母 開口 重紐A類 支韻 平聲'
+        ```
+        '''
+        母 = self.母
+        呼 = self.呼
+        等 = self.等
+        重紐 = self.重紐
+        韻 = self.韻
+        聲 = self.聲
+
+        if 韻 not in 開合皆有的韻:
+            呼 = None
+        if 韻 not in 一三等韻 and 韻 not in 二三等韻:
+            等 = None
+
+        呼字段 = f'{呼}口 ' if 呼 else ''
+        等字段 = f'{等}等 ' if 等 else ''
+        重紐字段 = f'重紐{重紐}類 ' if 重紐 else ''
+        韻字段 = f'{韻}韻 ' if 韻 else ''
+
+        return f'{母}母 {呼字段}{等字段}{重紐字段}{韻字段}{聲}聲'
+
+    @property
+    def 編碼(self) -> str:
         '''
         音韻編碼。
 
@@ -198,21 +230,28 @@ class 音韻地位:
         'fFA'
         ```
         '''
-        母編碼 = 所有母.index(self.母)
+        母 = self.母
+        呼 = self.呼
+        等 = self.等
+        重紐 = self.重紐
+        韻 = self.韻
+        聲 = self.聲
+
+        母編碼 = 所有母.index(母)
 
         韻編碼 = {
             '東三': 1,
             '歌三': 38,
             '麻三': 40,
             '庚三': 44,
-        }.get(self.韻 + self.等) or 韻順序表.index(self.韻)
+        }.get(韻 + 等) or 韻順序表.index(韻)
 
-        其他編碼 = ((self.呼 == '合') << 3) + ((self.重紐 == 'B') << 2) + (所有聲.index(self.聲))
+        其他編碼 = ((呼 == '合') << 3) + ((重紐 == 'B') << 2) + (所有聲.index(聲))
 
         return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼]
 
     @property
-    def 代表字(self):
+    def 代表字(self) -> Optional[str]:
         '''
         代表字。
 
@@ -223,8 +262,11 @@ class 音韻地位:
         '祇'
         ```
         '''
-        res = d描述2字頭解釋.get(self.描述)
-        return None if res is None else res[0][0]
+        編碼 = self.編碼
+        字頭們 = d編碼2字頭們.get(編碼)
+        if 字頭們 is None:
+            return None
+        return next(iter(字頭們)) # TODO: 優先選擇廣韻字頭
 
     @property
     def 條目(self):
@@ -238,35 +280,16 @@ class 音韻地位:
         []
         ```
         '''
-        return d描述2字頭解釋.get(self.描述, [])
+        編碼 = self.編碼
+        字頭們 = d編碼2字頭們.get(編碼)
+        return [
+            (
+                字頭,
+                d字頭_編碼2出處們[字頭, 編碼], # 出處們
+            ) for 字頭 in 字頭們
+        ]
 
-    def 反切(self, 字頭: str):
-        '''
-        獲取音韻地位與字頭對應的反切。
-
-
-        ```python
-        >>> Qieyun.音韻地位.from描述('幫三凡入').反切('法')
-        '方乏'
-        >>> Qieyun.音韻地位.from描述('羣開三A支平').反切('祇')
-        '巨支'
-        ```
-
-        若要獲取音韻地位的預設反切，可以隨便傳入一個字符，例如 `'?'`。
-
-        ```python
-        >>> Qieyun.音韻地位.from描述('幫三凡入').反切('?')
-        '方乏'
-        >>> Qieyun.音韻地位.from描述('羣開三A支平').反切('?')
-        '巨支'
-        >>> Qieyun.音韻地位.from描述('常開三麻去').反切('?')
-        None
-        ```
-        '''
-        特殊反切 = d描述字頭2特殊反切.get((self.描述, 字頭))
-        return 特殊反切 if 特殊反切 is not None else d描述2反切.get(self.描述)
-
-    def 屬於(self, s: str):
+    def 屬於(self, s: str) -> bool:
         '''
         判斷音韻地位是否符合給定的音韻表達式。
 
@@ -442,7 +465,7 @@ class 音韻地位:
     def __repr__(self):
         return '<音韻地位 ' + self.描述 + '>'
 
-def query字頭(字頭: str) -> List[Tuple[音韻地位, str]]:
+def query字頭(字頭: str) -> List[條目]:
     '''
     由字頭查出相應的音韻地位和解釋。
     ```python
@@ -456,9 +479,44 @@ def query字頭(字頭: str) -> List[Tuple[音韻地位, str]]:
     ]
     ```
     '''
-    return [(音韻地位.from描述(描述), 解釋) for 描述, 解釋 in d字頭2描述解釋.get(字頭, [])]
+    編碼們 = d字頭2編碼們.get(字頭)
+    return [] if 編碼們 is None else [
+        條目(
+            音韻地位=音韻地位.from編碼(編碼),
+            出處=d字頭_編碼2出處們[字頭, 編碼],
+        ) for 編碼 in 編碼們
+    ]
 
 def iter音韻地位():
     '''所有至少對應一個字頭的音韻地位。'''
-    for 描述 in d描述2字頭解釋:
-        yield 音韻地位.from描述(描述)
+    for 編碼 in d編碼2字頭們:
+        yield 音韻地位.from編碼(編碼)
+
+# 載入資料
+
+d字頭2編碼們 = defaultdict(dict)
+d編碼2字頭們 = defaultdict(dict)
+d字頭_編碼2出處們 = defaultdict(list)
+
+def 讀取資料():
+    '''
+    Test
+    '''
+    with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
+        next(f) # skip header
+        for line in f:
+            資料名稱, 小韻號, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',') # pylint: disable=unused-variable
+
+            if 反切 == '': 反切 = 反切覈校前
+            if 字頭 == '': 字頭 = 字頭覈校前
+
+            縮略圖 = 生成縮略圖(資料名稱, 圖片id)
+            書影 = 生成書影(資料名稱, 圖片id)
+
+            編碼 = 音韻地位.from描述(最簡描述).編碼
+
+            d字頭2編碼們[字頭][編碼] = None
+            d編碼2字頭們[編碼][字頭] = None
+            d字頭_編碼2出處們[字頭, 編碼].append(出處(資料名稱, 韻部原貌, 反切, 釋義, 縮略圖, 書影))
+
+讀取資料()
