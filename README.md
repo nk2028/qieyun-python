@@ -10,4 +10,4 @@ $ pip install qieyun
 
 ## Documentation
 
-See [here](https://nk2028.shn.hk/qieyun-python/).
+See [documentation](https://nk2028.shn.hk/qieyun-python/).
