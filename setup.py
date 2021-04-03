@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/nk2028/qieyun-python',
-    author='Ngiox Khyen 2028 Project',
+    author='nk2028',
     author_email='support@nk2028.shn.hk',
     classifiers=[
         'Development Status :: 4 - Beta',

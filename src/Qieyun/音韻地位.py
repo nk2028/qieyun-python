@@ -302,21 +302,60 @@ class 音韻地位:
         True
         ```
         '''
-        def equal聲(r):
-            if r in '平上去入': return r == self.聲
-            if r == '仄': return self.聲 != '平'
-            if r == '舒': return self.聲 != '入'
-            return False
+        def inner(q: str):
+            if q.endswith('母'):
+                母們 = q[:-1]
+                assert len(母們) > 0, '未指定母'
+                for 母 in 母們:
+                    assert 母 in 所有母, 母 + '母不存在'
+                return self.母 in 母們
 
-        def inner(q):
-            if q[-1] == '母': return self.母 in q[:-1]
-            if q[-1] == '等': return self.等 in q[:-1]
-            if q[-1] == '韻': return self.韻 in q[:-1]
-            if q[-1] == '聲': return any(equal聲(r) for r in q)
+            if q.endswith('等'):
+                等們 = q[:-1]
+                assert len(等們) > 0, '未指定等'
+                for 等 in 等們:
+                    assert 等 in '一二三四', 等 + '等不存在'
+                return self.等 in 等們
 
-            if q[-1] == '組': return self.組 is not None and self.組 in q[:-1]
-            if q[-1] == '音': return self.音 in q[:-1]
-            if q[-1] == '攝': return self.攝 in q[:-1]
+            if q.endswith('韻'):
+                韻們 = q[:-1]
+                assert len(韻們) > 0, '未指定韻'
+                for 韻 in 韻們:
+                    assert 韻 in 所有韻, 韻 + '韻不存在'
+                return self.韻 in 韻們
+
+            if q.endswith('聲'):
+                聲們 = q[:-1]
+                assert len(聲們) > 0, '未指定聲'
+                def equal聲(聲: str) -> bool:
+                    if 聲 in '平上去入': return self.聲 == 聲
+                    if 聲 == '仄': return self.聲 != '平'
+                    if 聲 == '舒': return self.聲 != '入'
+                    raise AssertionError(聲 + '聲不存在')
+                return any(equal聲(聲) for 聲 in 聲們)
+
+            if q.endswith('組'):
+                組們 = q[:-1]
+                assert len(組們) > 0, '未指定組'
+                # TODO: 所有組
+                # for 組 in 組們:
+                #     assert 組 in 所有組, 組 + '組不存在'
+                return self.組 is not None and self.組 in 組們
+
+            if q.endswith('音'):
+                音們 = q[:-1]
+                assert len(音們) > 0, '未指定音'
+                for 音 in 音們:
+                    assert 音 in '脣舌牙齒喉', 音 + '音不存在'
+                return self.音 in 音們
+
+            if q.endswith('攝'):
+                攝們 = q[:-1]
+                assert len(攝們) > 0, '未指定攝'
+                # TODO: 所有攝
+                # for 攝 in 攝們:
+                #     assert 攝 in 所有攝, 攝 + '攝不存在'
+                return self.攝 in 攝們
 
             if q == '開口': return self.呼 == '開'
             if q == '合口': return self.呼 == '合'
@@ -328,7 +367,7 @@ class 音韻地位:
             if q == '全濁': return self.清濁 == '全濁'
             if q == '次濁': return self.清濁 == '次濁'
 
-            assert False, 'No such 運算符'
+            raise AssertionError('無此運算符：' + q)
 
         return any(all(inner(q) for q in p.split(' ')) for p in s.split(' 或 '))
 
@@ -438,6 +477,8 @@ class 音韻地位:
         '''
         將音韻描述或最簡音韻描述轉換為音韻地位。
         '''
+        # TODO: 重寫解析器，支援更多格式
+
         match = 解析音韻描述.fullmatch(描述)
         assert match is not None
 
