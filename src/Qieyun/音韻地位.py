@@ -43,7 +43,7 @@ HERE = path.abspath(path.dirname(__file__))
 # 底層資料結構
 
 條目 = namedtuple('條目', ['音韻地位', '出處'])
-出處 = namedtuple('出處', ['資料名稱', '韻部原貌', '反切', '釋義', '縮略圖', '書影'])
+出處 = namedtuple('出處', ['資料名稱', '韻部原貌', '反切', '釋義', '釋義補充', '縮略圖', '書影'])
 
 # 「音韻地位」物件
 
@@ -506,11 +506,12 @@ class 音韻地位:
     def __repr__(self):
         return '<音韻地位 ' + self.描述 + '>'
 
-def query字頭(字頭: str) -> List[條目]:
+def query字頭(字頭: str) -> List[條目]: # TODO: Fix typing
     '''
     由字頭查出相應的音韻地位和解釋。
+
     ```python
-    >>> Qieyun.query字頭('結')
+    >>> Qieyun.query字頭('結') # TODO: Update to new format
     [(<音韻地位 見開四先入>, '締也古屑切十五')]
     >>> Qieyun.query字頭('冷')
     [
@@ -539,14 +540,14 @@ d字頭2編碼們 = defaultdict(dict)
 d編碼2字頭們 = defaultdict(dict)
 d字頭_編碼2出處們 = defaultdict(list)
 
-def 讀取資料():
+def 讀取資料(): # TODO: Fix documentation
     '''
     Test
     '''
     with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
-            資料名稱, 小韻號, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',') # pylint: disable=unused-variable
+            資料名稱, _, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',')
 
             if 反切 == '': 反切 = 反切覈校前
             if 字頭 == '': 字頭 = 字頭覈校前
@@ -558,6 +559,8 @@ def 讀取資料():
 
             d字頭2編碼們[字頭][編碼] = None
             d編碼2字頭們[編碼][字頭] = None
-            d字頭_編碼2出處們[字頭, 編碼].append(出處(資料名稱, 韻部原貌, 反切, 釋義, 縮略圖, 書影))
+            d字頭_編碼2出處們[字頭, 編碼].append(出處(資料名稱, 韻部原貌, 反切, 釋義, 釋義補充, 縮略圖, 書影))
 
 讀取資料()
+
+# TODO: Add dpc tests
