@@ -5,4 +5,5 @@ dist
 __pycache__
 .vscode
 /src/Qieyun/qieyun.csv
+/src/Qieyun/hiunndu.csv
 /docs

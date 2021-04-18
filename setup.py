@@ -40,7 +40,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     package_data={
-        'Qieyun': ['qieyun.csv'],
+        'Qieyun': ['qieyun.csv', 'hiunndu.csv'],
     },
     python_requires='>=3.6, <4',
     entry_points={},
