@@ -26,13 +26,9 @@ jobs:
       run: pip install setuptools wheel twine
     - name: Install PyTest
       run: pip install pytest
-    - name: Install Pylint
-      run: pip install pylint
     - name: Prepare data
       run: python prepare.py
     - name: Install package
       run: pip install .
     - name: Test
       run: pytest test/main.py
-    - name: Lint
-      run: pylint src test

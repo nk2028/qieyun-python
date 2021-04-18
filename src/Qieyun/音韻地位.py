@@ -1,49 +1,48 @@
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict, namedtuple
-from os import path
 import re
-from typing import List, Optional
+from typing import Optional
 
 from .拓展音韻屬性 import 母到清濁, 母到音, 母到組, 韻到攝
-from .書影 import 生成縮略圖, 生成書影
-
-HERE = path.abspath(path.dirname(__file__))
-
-# 常量
 
 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-所有母 = '幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日見溪羣疑影曉匣云以'
-所有呼 = '開合'
-所有等 = '一二三四'
-所有重紐 = 'AB'
-所有韻 = '東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡'
-所有聲 = '平上去入'
-
-重紐母 = '幫滂並明見溪羣疑影曉'
-重紐韻 = '支脂祭眞仙宵清侵鹽'
-
-開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登'
-必為開口的韻 = '咍痕欣嚴之魚臻蕭宵肴豪侯侵覃談鹽添咸銜'
-必為合口的韻 = '灰魂文凡'
-開合中立的韻 = '東冬鍾江虞模尤幽'
-
 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡'
 
-一等韻 = '冬模泰咍灰痕魂寒豪唐登侯覃談'
-二等韻 = '江佳皆夬刪山肴耕咸銜'
-三等韻 = '鍾支脂之微魚虞祭廢眞臻欣元文仙宵陽清蒸尤幽侵鹽嚴凡'
-四等韻 = '齊先蕭青添'
-一三等韻 = '東歌'
-二三等韻 = '麻庚'
+# 常量
 
-解析音韻描述 = re.compile('([%s])([%s]?)([%s]?)([%s]?)([%s])([%s])' % (所有母, 所有呼, 所有等, 所有重紐, 所有韻, 所有聲))
+class 常量:
+    '''
+    Tests
+    '''
 
-# 底層資料結構
+    所有母 = '幫滂並明端透定泥來知徹澄孃精清從心邪莊初崇生俟章昌常書船日見溪羣疑影曉匣云以'
+    所有呼 = '開合'
+    所有等 = '一二三四'
+    所有重紐 = 'AB'
+    所有韻 = '東冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌麻陽唐庚耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡'
+    所有聲 = '平上去入'
 
-條目 = namedtuple('條目', ['音韻地位', '出處'])
-出處 = namedtuple('出處', ['資料名稱', '韻部原貌', '反切', '釋義', '釋義補充', '縮略圖', '書影'])
+    重紐母 = '幫滂並明見溪羣疑影曉'
+    重紐韻 = '支脂祭眞仙宵清侵鹽'
+
+    開合皆有的韻 = '支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登'
+    必為開口的韻 = '咍痕欣嚴之魚臻蕭宵肴豪侯侵覃談鹽添咸銜'
+    必為合口的韻 = '灰魂文凡'
+    開合中立的韻 = '東冬鍾江虞模尤幽'
+
+    一等韻 = '冬模泰咍灰痕魂寒豪唐登侯覃談'
+    二等韻 = '江佳皆夬刪山肴耕咸銜'
+    三等韻 = '鍾支脂之微魚虞祭廢眞臻欣元文仙宵陽清蒸尤幽侵鹽嚴凡'
+    四等韻 = '齊先蕭青添'
+    一三等韻 = '東歌'
+    二三等韻 = '麻庚'
+
+    輕脣韻 = '東鍾微虞廢文元陽尤凡'
+
+    次入韻 = '祭泰夬廢'
+
+解析音韻描述 = re.compile('([%s])([%s]?)([%s]?)([%s]?)([%s])([%s])' % (常量.所有母, 常量.所有呼, 常量.所有等, 常量.所有重紐, 常量.所有韻, 常量.所有聲))
 
 # 「音韻地位」物件
 
@@ -156,9 +155,9 @@ class 音韻地位:
         韻 = self.韻
         聲 = self.聲
 
-        if 韻 not in 開合皆有的韻:
+        if 韻 not in 常量.開合皆有的韻:
             呼 = None
-        if 韻 not in 一三等韻 and 韻 not in 二三等韻:
+        if 韻 not in 常量.一三等韻 and 韻 not in 常量.二三等韻:
             等 = None
 
         return 母 + (呼 or '') + (等 or '') + (重紐 or '') + 韻 + 聲
@@ -206,9 +205,9 @@ class 音韻地位:
         韻 = self.韻
         聲 = self.聲
 
-        if 韻 not in 開合皆有的韻:
+        if 韻 not in 常量.開合皆有的韻:
             呼 = None
-        if 韻 not in 一三等韻 and 韻 not in 二三等韻:
+        if 韻 not in 常量.一三等韻 and 韻 not in 常量.二三等韻:
             等 = None
 
         呼字段 = f'{呼}口 ' if 呼 else ''
@@ -237,7 +236,7 @@ class 音韻地位:
         韻 = self.韻
         聲 = self.聲
 
-        母編碼 = 所有母.index(母)
+        母編碼 = 常量.所有母.index(母)
 
         韻編碼 = {
             '東三': 1,
@@ -246,48 +245,9 @@ class 音韻地位:
             '庚三': 44,
         }.get(韻 + 等) or 韻順序表.index(韻)
 
-        其他編碼 = ((呼 == '合') << 3) + ((重紐 == 'B') << 2) + 所有聲.index(聲)
+        其他編碼 = ((呼 == '合') << 3) + ((重紐 == 'B') << 2) + 常量.所有聲.index(聲)
 
         return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼]
-
-    @property
-    def 代表字(self) -> Optional[str]:
-        '''
-        代表字。
-
-        ```python
-        >>> Qieyun.音韻地位.from描述('幫三凡入').代表字
-        '法'
-        >>> Qieyun.音韻地位.from描述('羣開三A支平').代表字
-        '祇'
-        ```
-        '''
-        編碼 = self.編碼
-        字頭們 = d編碼2字頭們.get(編碼)
-        if 字頭們 is None:
-            return None
-        return next(iter(字頭們)) # TODO: 優先選擇廣韻字頭
-
-    @property
-    def 條目(self):
-        '''
-        條目。
-
-        ```python
-        >>> Qieyun.音韻地位.from描述('影開二銜去').條目
-        [('𪒠', '叫呼仿佛𪒠然自得音黯去聲一')]
-        >>> Qieyun.音韻地位.from描述('常開三麻去').條目
-        []
-        ```
-        '''
-        編碼 = self.編碼
-        字頭們 = d編碼2字頭們.get(編碼)
-        return [
-            (
-                字頭,
-                d字頭_編碼2出處們[字頭, 編碼], # 出處們
-            ) for 字頭 in 字頭們
-        ]
 
     def 屬於(self, s: str) -> bool:
         '''
@@ -307,7 +267,7 @@ class 音韻地位:
                 母們 = q[:-1]
                 assert len(母們) > 0, '未指定母'
                 for 母 in 母們:
-                    assert 母 in 所有母, 母 + '母不存在'
+                    assert 母 in 常量.所有母, 母 + '母不存在'
                 return self.母 in 母們
 
             if q.endswith('等'):
@@ -321,7 +281,7 @@ class 音韻地位:
                 韻們 = q[:-1]
                 assert len(韻們) > 0, '未指定韻'
                 for 韻 in 韻們:
-                    assert 韻 in 所有韻, 韻 + '韻不存在'
+                    assert 韻 in 常量.所有韻, 韻 + '韻不存在'
                 return self.韻 in 韻們
 
             if q.endswith('聲'):
@@ -381,36 +341,36 @@ class 音韻地位:
         '''
         驗證給定的音韻地位六要素是否合法。
         '''
-        assert len(母) == 1 and 母 in 所有母, 'Unexpected 母: ' + repr(母)
-        assert len(等) == 1 and 等 in 所有等, 'Unexpected 等: ' + repr(等)
-        assert len(韻) == 1 and 韻 in 所有韻, 'Unexpected 韻: ' + repr(韻)
-        assert len(聲) == 1 and 聲 in 所有聲, 'Unexpected 聲: ' + repr(聲)
+        assert len(母) == 1 and 母 in 常量.所有母, 'Unexpected 母: ' + repr(母)
+        assert len(等) == 1 and 等 in 常量.所有等, 'Unexpected 等: ' + repr(等)
+        assert len(韻) == 1 and 韻 in 常量.所有韻, 'Unexpected 韻: ' + repr(韻)
+        assert len(聲) == 1 and 聲 in 常量.所有聲, 'Unexpected 聲: ' + repr(聲)
 
-        if 母 in '幫滂並明' or 韻 in 開合中立的韻:
+        if 母 in '幫滂並明' or 韻 in 常量.開合中立的韻:
             assert 呼 is None, 'Unexpected 呼: ' + repr(呼)
-        elif 韻 in 必為開口的韻:
+        elif 韻 in 常量.必為開口的韻:
             assert 呼 == '開'
-        elif 韻 in 必為合口的韻:
+        elif 韻 in 常量.必為合口的韻:
             assert 呼 == '合'
         else:
-            assert 呼 is not None and len(呼) == 1 and 呼 in 所有呼, 'Unexpected 呼: ' + repr(呼)
+            assert 呼 is not None and len(呼) == 1 and 呼 in 常量.所有呼, 'Unexpected 呼: ' + repr(呼)
 
-        if 母 in 重紐母 and 韻 in 重紐韻:
-            assert 重紐 is not None and len(重紐) == 1 and 重紐 in 所有重紐, 'Unexpected 重紐: ' + repr(重紐)
+        if 母 in 常量.重紐母 and 韻 in 常量.重紐韻:
+            assert 重紐 is not None and len(重紐) == 1 and 重紐 in 常量.所有重紐, 'Unexpected 重紐: ' + repr(重紐)
         else:
             assert 重紐 is None, 'Unexpected 重紐: ' + repr(重紐)
 
-        if 韻 in 一等韻:
+        if 韻 in 常量.一等韻:
             assert 等 == '一', 'Unexpected 等: ' + repr(等)
-        elif 韻 in 二等韻:
+        elif 韻 in 常量.二等韻:
             assert 等 == '二', 'Unexpected 等: ' + repr(等)
-        elif 韻 in 三等韻:
+        elif 韻 in 常量.三等韻:
             assert 等 == '三', 'Unexpected 等: ' + repr(等)
-        elif 韻 in 四等韻:
+        elif 韻 in 常量.四等韻:
             assert 等 == '四', 'Unexpected 等: ' + repr(等)
-        elif 韻 in 一三等韻:
+        elif 韻 in 常量.一三等韻:
             assert 等 in ('一', '三'), 'Unexpected 等: ' + repr(等)
-        elif 韻 in 二三等韻:
+        elif 韻 in 常量.二三等韻:
             assert 等 in ('二', '三'), 'Unexpected 等: ' + repr(等)
 
     @staticmethod
@@ -428,10 +388,10 @@ class 音韻地位:
         重紐編碼 = (其他編碼 >> 2) & 0b1
         聲編碼 = 其他編碼 & 0b11
 
-        母 = 所有母[母編碼]
-        呼 = 所有呼[呼編碼]
-        重紐 = 所有重紐[重紐編碼]
-        聲 = 所有聲[聲編碼]
+        母 = 常量.所有母[母編碼]
+        呼 = 常量.所有呼[呼編碼]
+        重紐 = 常量.所有重紐[重紐編碼]
+        聲 = 常量.所有聲[聲編碼]
 
         if 韻編碼 == 0:
             韻 = '東'; 等 = '一'
@@ -451,20 +411,20 @@ class 音韻地位:
             韻 = '庚'; 等 = '三'
         else:
             韻 = 韻順序表[韻編碼]
-            if 韻 in 一等韻:
+            if 韻 in 常量.一等韻:
                 等 = '一'
-            elif 韻 in 二等韻:
+            elif 韻 in 常量.二等韻:
                 等 = '二'
-            elif 韻 in 三等韻:
+            elif 韻 in 常量.三等韻:
                 等 = '三'
-            elif 韻 in 四等韻:
+            elif 韻 in 常量.四等韻:
                 等 = '四'
 
-        if 母 in '幫滂並明' or 韻 in 開合中立的韻:
+        if 母 in '幫滂並明' or 韻 in 常量.開合中立的韻:
             assert 呼 == '開'
             呼 = None
 
-        if 母 not in 重紐母 or 韻 not in 重紐韻:
+        if 母 not in 常量.重紐母 or 韻 not in 常量.重紐韻:
             assert 重紐 == 'A'
             重紐 = None
 
@@ -490,14 +450,14 @@ class 音韻地位:
         聲 = match.group(6)
 
         if 呼 is None and 母 not in '幫滂並明':
-            if 韻 in 必為開口的韻: 呼 = '開'
-            elif 韻 in 必為合口的韻: 呼 = '合'
+            if 韻 in 常量.必為開口的韻: 呼 = '開'
+            elif 韻 in 常量.必為合口的韻: 呼 = '合'
 
         if 等 is None:
-            if 韻 in 一等韻: 等 = '一'
-            elif 韻 in 二等韻: 等 = '二'
-            elif 韻 in 三等韻: 等 = '三'
-            elif 韻 in 四等韻: 等 = '四'
+            if 韻 in 常量.一等韻: 等 = '一'
+            elif 韻 in 常量.二等韻: 等 = '二'
+            elif 韻 in 常量.三等韻: 等 = '三'
+            elif 韻 in 常量.四等韻: 等 = '四'
 
         音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲)
 
@@ -505,62 +465,3 @@ class 音韻地位:
 
     def __repr__(self):
         return '<音韻地位 ' + self.描述 + '>'
-
-def query字頭(字頭: str) -> List[條目]: # TODO: Fix typing
-    '''
-    由字頭查出相應的音韻地位和解釋。
-
-    ```python
-    >>> Qieyun.query字頭('結') # TODO: Update to new format
-    [(<音韻地位 見開四先入>, '締也古屑切十五')]
-    >>> Qieyun.query字頭('冷')
-    [
-      (<音韻地位 來開四青平>, '冷凙吳人云冰凌又力頂切'),
-      (<音韻地位 來開二庚上>, '寒也魯打切又魯頂切一'),
-      (<音韻地位 來開四青上>, '寒也又姓前趙錄有徐州刺史冷道字安義又盧打切')],
-    ]
-    ```
-    '''
-    編碼們 = d字頭2編碼們.get(字頭)
-    return [] if 編碼們 is None else [
-        條目(
-            音韻地位=音韻地位.from編碼(編碼),
-            出處=d字頭_編碼2出處們[字頭, 編碼],
-        ) for 編碼 in 編碼們
-    ]
-
-def iter音韻地位():
-    '''所有至少對應一個字頭的音韻地位。'''
-    for 編碼 in d編碼2字頭們:
-        yield 音韻地位.from編碼(編碼)
-
-# 載入資料
-
-d字頭2編碼們 = defaultdict(dict)
-d編碼2字頭們 = defaultdict(dict)
-d字頭_編碼2出處們 = defaultdict(list)
-
-def 讀取資料(): # TODO: Fix documentation
-    '''
-    Test
-    '''
-    with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
-        next(f) # skip header
-        for line in f:
-            資料名稱, _, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',')
-
-            if 反切 == '': 反切 = 反切覈校前
-            if 字頭 == '': 字頭 = 字頭覈校前
-
-            縮略圖 = 生成縮略圖(資料名稱, 圖片id)
-            書影 = 生成書影(資料名稱, 圖片id)
-
-            編碼 = 音韻地位.from描述(最簡描述).編碼
-
-            d字頭2編碼們[字頭][編碼] = None
-            d編碼2字頭們[編碼][字頭] = None
-            d字頭_編碼2出處們[字頭, 編碼].append(出處(資料名稱, 韻部原貌, 反切, 釋義, 釋義補充, 縮略圖, 書影))
-
-讀取資料()
-
-# TODO: Add dpc tests
