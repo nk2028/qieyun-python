@@ -13,6 +13,7 @@ HERE = path.abspath(path.dirname(__file__))
 
 d字頭2編碼們 = defaultdict(dict)
 d編碼2字頭們 = defaultdict(dict)
+d編碼2廣韻字頭們 = defaultdict(dict)
 d字頭_編碼2出處們 = defaultdict(list)
 
 def query字頭(字頭: str):
@@ -23,7 +24,7 @@ def query字頭(字頭: str):
     return [] if 編碼們 is None else [
         {
             '音韻地位': 音韻地位.from編碼(編碼),
-            '出處': d字頭_編碼2出處們[字頭, 編碼],
+            '出處們': d字頭_編碼2出處們[字頭, 編碼],
         } for 編碼 in 編碼們
     ]
 
@@ -34,30 +35,37 @@ def iter音韻地位():
 
 def get代表字(當前音韻地位) -> Optional[str]:
     '''
-    代表字。
+    獲取音韻地位對應的代表字。
     '''
     編碼 = 當前音韻地位.編碼
-    字頭們 = d編碼2字頭們.get(編碼)
-    if 字頭們 is None:
-        return None
-    return next(iter(字頭們)) # TODO: 優先選擇廣韻字頭
 
-def get條目(當前音韻地位):
+    # 優先選擇廣韻字頭
+    廣韻字頭們 = d編碼2廣韻字頭們.get(編碼)
+    if 廣韻字頭們 is not None:
+        return next(iter(廣韻字頭們))
+
+    字頭們 = d編碼2字頭們.get(編碼)
+    if 字頭們 is not None:
+        return next(iter(字頭們))
+
+    return None
+
+def get條目們(當前音韻地位):
     '''
-    條目。
+    獲取音韻地位對應的所有條目。
     '''
     編碼 = 當前音韻地位.編碼
     字頭們 = d編碼2字頭們.get(編碼)
-    return [
-        (
-            字頭,
-            d字頭_編碼2出處們[字頭, 編碼], # 出處們
-        ) for 字頭 in 字頭們
+    return [] if 字頭們 is None else [
+        {
+            '字頭': 字頭,
+            '出處們': d字頭_編碼2出處們[字頭, 編碼],
+        } for 字頭 in 字頭們
     ]
 
-def 讀取資料(): # TODO: Fix documentation
+def 讀取資料():
     '''
-    Test
+    TODO: documentation
     '''
     with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
         next(f) # skip header
@@ -86,6 +94,8 @@ def 讀取資料(): # TODO: Fix documentation
             })
 
             if 資料名稱 == '廣韻':
+                d編碼2廣韻字頭們[編碼][字頭] = None
+
                 韻圖出處 = d廣韻小韻號2韻圖出處.get(小韻號)
                 if 韻圖出處 is not None:
                     d字頭_編碼2出處們[字頭, 編碼].append(韻圖出處)

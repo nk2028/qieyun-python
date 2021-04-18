@@ -20,7 +20,7 @@ def 生成書影(資料名稱, 圖片id, 縮略圖=False):
         position = match[3] # pylint: disable=unused-variable
         return f'https://cdn.jsdelivr.net/gh/nk2028/kuankhiunn@main/volume{volume}/{縮略圖}p{page:03}.jpg'
 
-    if 資料名稱 == '韻鏡永祿本':
+    if 資料名稱 == '韻鏡（永祿本）':
         page = int(圖片id)
         return f'https://cdn.jsdelivr.net/gh/nk2028/hiunnkyanq@main/hwanklukpuoon/{縮略圖}{page+9:02}.png'
 

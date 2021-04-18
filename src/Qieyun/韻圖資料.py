@@ -10,11 +10,13 @@ HERE = path.abspath(path.dirname(__file__))
 
 d編碼2廣韻小韻號 = defaultdict(dict)
 d廣韻小韻號2字頭們 = defaultdict(dict)
+
 d廣韻小韻號2韻圖出處 = {}
 
-def 讀取資料(): # TODO: Fix documentation
+def 讀取資料():
     '''
-    Test
+    讀取韻書與韻圖資料，將韻書的小韻對應到韻圖等字頭。
+    此函式執行後，結果將存儲於 `d廣韻小韻號2韻圖出處` 中。
     '''
     with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
         next(f) # skip header
@@ -41,8 +43,8 @@ def 讀取資料(): # TODO: Fix documentation
             for 對應小韻號 in 對應小韻號們:
                 對應字頭們 = d廣韻小韻號2字頭們[對應小韻號]
                 if 字頭 in 對應字頭們:
-                    縮略圖 = 生成書影('韻鏡永祿本', 轉號, 縮略圖=True)
-                    書影 = 生成書影('韻鏡永祿本', 轉號)
+                    縮略圖 = 生成書影('韻鏡（永祿本）', 轉號, 縮略圖=True)
+                    書影 = 生成書影('韻鏡（永祿本）', 轉號)
 
                     d廣韻小韻號2韻圖出處[對應小韻號] = {
                         '資料類型': '韻圖',
