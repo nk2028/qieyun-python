@@ -2,7 +2,12 @@ from os import path
 from urllib.request import urlretrieve
 
 here = path.abspath(path.dirname(__file__))
-target = path.join(here, 'src/Qieyun/qieyun.csv')
+url = 'https://raw.githubusercontent.com/nk2028/qieyun-data/4f2a9aa/'
 
-if not path.exists(target):
-    urlretrieve('https://raw.githubusercontent.com/nk2028/qieyun-data/9ee0dc6/data.csv', target)
+def retrieve(filename):
+    target = path.join(here, 'src/Qieyun', filename)
+    if not path.exists(target):
+        urlretrieve(url + filename, target)
+
+retrieve('rhyme_book.csv')
+retrieve('rhyme_table.csv')

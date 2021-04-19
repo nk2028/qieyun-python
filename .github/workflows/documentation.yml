@@ -25,7 +25,7 @@ jobs:
     - name: Install package
       run: pip install .
     - name: Build documentation
-      run: pdoc --html -o docs -f Qieyun.音韻地位
+      run: pdoc --html -o docs -f -c sort_identifiers=False Qieyun.音韻地位
     - name: Publish
       run: |
         # Create a temporary directory
