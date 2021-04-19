@@ -48,6 +48,9 @@ d編碼2廣韻字頭們 = defaultdict(dict)
 d字頭_編碼2韻書出處們 = defaultdict(list)
 d資料名稱_小韻號_編碼2字頭們 = defaultdict(dict)
 
+音韻地位_韻書出處們 = namedtuple(&#39;條目&#39;, [&#39;音韻地位&#39;, &#39;韻書出處們&#39;])
+字頭_韻書出處們 = namedtuple(&#39;條目&#39;, [&#39;字頭&#39;, &#39;韻書出處們&#39;])
+
 def iter音韻地位():
     &#39;&#39;&#39;
     所有至少對應一個字頭的音韻地位。
@@ -60,10 +63,10 @@ def _字頭2音韻地位_韻書出處們(字頭: str):
     由字頭查出相應的音韻地位和解釋。
     &#39;&#39;&#39;
     return [
-        {
-            &#39;音韻地位&#39;: 音韻地位.from編碼(編碼),
-            &#39;韻書出處們&#39;: d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
-        } for 編碼 in d字頭2編碼們.get(字頭, [])
+        音韻地位_韻書出處們(
+            音韻地位=音韻地位.from編碼(編碼),
+            韻書出處們=d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
+        ) for 編碼 in d字頭2編碼們.get(字頭, [])
     ]
 
 def 音韻地位2代表字(當前音韻地位) -&gt; Optional[str]:
@@ -89,10 +92,10 @@ def 音韻地位2字頭_韻書出處們(當前音韻地位):
     &#39;&#39;&#39;
     編碼 = 當前音韻地位.編碼
     return [
-        {
-            &#39;字頭&#39;: 字頭,
-            &#39;韻書出處們&#39;: d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
-        } for 字頭 in d編碼2字頭們.get(編碼, [])
+        字頭_韻書出處們(
+            字頭=字頭,
+            韻書出處們=d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
+        ) for 字頭 in d編碼2字頭們.get(編碼, [])
     ]
 
 def _讀取資料():
@@ -107,7 +110,7 @@ def _讀取資料():
             if 反切 == &#39;&#39;: 反切 = 反切覈校前
             if 字頭 == &#39;&#39;: 字頭 = 字頭覈校前
 
-            縮略圖 = 生成書影(資料名稱, 圖片id, 縮略圖=False)
+            縮略圖 = 生成書影(資料名稱, 圖片id, 縮略圖=True)
             書影 = 生成書影(資料名稱, 圖片id)
 
             編碼 = 音韻地位.from描述(最簡描述).編碼
@@ -197,16 +200,63 @@ _讀取資料()</code></pre>
     &#39;&#39;&#39;
     編碼 = 當前音韻地位.編碼
     return [
-        {
-            &#39;字頭&#39;: 字頭,
-            &#39;韻書出處們&#39;: d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
-        } for 字頭 in d編碼2字頭們.get(編碼, [])
+        字頭_韻書出處們(
+            字頭=字頭,
+            韻書出處們=d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
+        ) for 字頭 in d編碼2字頭們.get(編碼, [])
     ]</code></pre>
 </details>
 </dd>
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="Qieyun.韻書.條目"><code class="flex name class">
+<span>class <span class="ident">音韻地位_韻書出處們</span></span>
+<span>(</span><span>音韻地位, 韻書出處們)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>條目(音韻地位, 韻書出處們)</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.tuple</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="Qieyun.韻書.條目.音韻地位"><code class="name">var <span class="ident">音韻地位</span></code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 0</p></div>
+</dd>
+<dt id="Qieyun.韻書.條目.韻書出處們"><code class="name">var <span class="ident">韻書出處們</span></code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 1</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="Qieyun.韻書.條目"><code class="flex name class">
+<span>class <span class="ident">字頭_韻書出處們</span></span>
+<span>(</span><span>字頭, 韻書出處們)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>條目(字頭, 韻書出處們)</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.tuple</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="Qieyun.韻書.條目.字頭"><code class="name">var <span class="ident">字頭</span></code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 0</p></div>
+</dd>
+<dt id="Qieyun.韻書.條目.韻書出處們"><code class="name">var <span class="ident">韻書出處們</span></code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 1</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -225,6 +275,24 @@ _讀取資料()</code></pre>
 <li><code><a title="Qieyun.韻書.iter音韻地位" href="#Qieyun.韻書.iter音韻地位">iter音韻地位</a></code></li>
 <li><code><a title="Qieyun.韻書.音韻地位2代表字" href="#Qieyun.韻書.音韻地位2代表字">音韻地位2代表字</a></code></li>
 <li><code><a title="Qieyun.韻書.音韻地位2字頭_韻書出處們" href="#Qieyun.韻書.音韻地位2字頭_韻書出處們">音韻地位2字頭_韻書出處們</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="Qieyun.韻書.條目" href="#Qieyun.韻書.條目">條目</a></code></h4>
+<ul class="">
+<li><code><a title="Qieyun.韻書.條目.音韻地位" href="#Qieyun.韻書.條目.音韻地位">音韻地位</a></code></li>
+<li><code><a title="Qieyun.韻書.條目.韻書出處們" href="#Qieyun.韻書.條目.韻書出處們">韻書出處們</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="Qieyun.韻書.條目" href="#Qieyun.韻書.條目">條目</a></code></h4>
+<ul class="">
+<li><code><a title="Qieyun.韻書.條目.字頭" href="#Qieyun.韻書.條目.字頭">字頭</a></code></li>
+<li><code><a title="Qieyun.韻書.條目.韻書出處們" href="#Qieyun.韻書.條目.韻書出處們">韻書出處們</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
