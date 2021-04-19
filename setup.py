@@ -43,6 +43,7 @@ setup(
         'Qieyun': ['qieyun.csv', 'hiunndu.csv'],
     },
     python_requires='>=3.6, <4',
+    install_requires=['networkx>=2.5,<2.6'],
     entry_points={},
     project_urls={
         'Bug Reports': 'https://github.com/nk2028/qieyun-python/issues',

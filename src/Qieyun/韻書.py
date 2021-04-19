@@ -7,16 +7,15 @@ from typing import Optional
 from .音韻地位 import 音韻地位
 from .書影 import 生成書影
 
-from .韻圖資料 import d廣韻小韻號2韻圖出處
-
 HERE = path.abspath(path.dirname(__file__))
 
 d字頭2編碼們 = defaultdict(dict)
 d編碼2字頭們 = defaultdict(dict)
 d編碼2廣韻字頭們 = defaultdict(dict)
 d字頭_編碼2出處們 = defaultdict(list)
+d資料名稱_小韻號_編碼2字頭們 = defaultdict(dict)
 
-def query字頭(字頭: str):
+def 字頭2音韻地位_出處們(字頭: str):
     '''
     由字頭查出相應的音韻地位和解釋。
     '''
@@ -28,12 +27,7 @@ def query字頭(字頭: str):
         } for 編碼 in 編碼們
     ]
 
-def iter音韻地位():
-    '''所有至少對應一個字頭的音韻地位。'''
-    for 編碼 in d編碼2字頭們:
-        yield 音韻地位.from編碼(編碼)
-
-def get代表字(當前音韻地位) -> Optional[str]:
+def 音韻地位2代表字(當前音韻地位) -> Optional[str]:
     '''
     獲取音韻地位對應的代表字。
     '''
@@ -50,7 +44,7 @@ def get代表字(當前音韻地位) -> Optional[str]:
 
     return None
 
-def get條目們(當前音韻地位):
+def 音韻地位2字頭_出處們(當前音韻地位):
     '''
     獲取音韻地位對應的所有條目。
     '''
@@ -63,6 +57,11 @@ def get條目們(當前音韻地位):
         } for 字頭 in 字頭們
     ]
 
+def iter音韻地位():
+    '''所有至少對應一個字頭的音韻地位。'''
+    for 編碼 in d編碼2字頭們:
+        yield 音韻地位.from編碼(編碼)
+
 def 讀取資料():
     '''
     TODO: documentation
@@ -70,7 +69,7 @@ def 讀取資料():
     with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
-            資料名稱, 小韻號, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',')
+            資料名稱, 小韻號, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',') # pylint: disable=unused-variable
 
             if 反切 == '': 反切 = 反切覈校前
             if 字頭 == '': 字頭 = 字頭覈校前
@@ -83,7 +82,6 @@ def 讀取資料():
             d字頭2編碼們[字頭][編碼] = None
             d編碼2字頭們[編碼][字頭] = None
             d字頭_編碼2出處們[字頭, 編碼].append({
-                '資料類型': '韻書',
                 '資料名稱': 資料名稱,
                 '韻部原貌': 韻部原貌,
                 '反切': 反切,
@@ -92,12 +90,9 @@ def 讀取資料():
                 '縮略圖': 縮略圖,
                 '書影': 書影,
             })
+            d資料名稱_小韻號_編碼2字頭們[資料名稱, 小韻號, 編碼][字頭] = None
 
             if 資料名稱 == '廣韻':
                 d編碼2廣韻字頭們[編碼][字頭] = None
-
-                韻圖出處 = d廣韻小韻號2韻圖出處.get(小韻號)
-                if 韻圖出處 is not None:
-                    d字頭_編碼2出處們[字頭, 編碼].append(韻圖出處)
 
 讀取資料()
