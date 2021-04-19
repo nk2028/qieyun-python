@@ -1,5 +1,158 @@
 # -*- coding: utf-8 -*-
 
+'''
+## 音韻屬性
+
+### 母、清濁、音、組
+
+<style>
+.big-table { border-collapse: collapse; padding: 1em 0; display: block; }
+.big-table th, .big-table td { border: 1px solid; padding: 4px 6px; text-align: center; }
+.admonition { border-radius: 14px; padding: 2px 18px !important; }
+.admonition > .admonition-title { display: none; }
+</style>
+
+<table class="big-table">
+<tbody>
+<tr><th></th><th>全清</th><th>次清</th><th>全濁</th><th>次濁</th><th>全清</th><th>全濁</th></tr>
+<tr><th>脣音</th><td>幫</td><td>滂</td><td>並</td><td>明</td><td></td><td></td></tr>
+<tr><th rowspan="3">舌音</th><td>端</td><td>透</td><td>定</td><td>泥</td><td></td><td></td></tr>
+<tr><td>知</td><td>徹</td><td>澄</td><td>孃</td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td>來</td><td></td><td></td></tr>
+<tr><th rowspan="4">齒音</th><td>精</td><td>清</td><td>從</td><td></td><td>心</td><td>邪</td></tr>
+<tr><td>莊</td><td>初</td><td>崇</td><td></td><td>生</td><td>俟</td></tr>
+<tr><td>章</td><td>昌</td><td>常</td><td></td><td>書</td><td>船</td></tr>
+<tr><td></td><td></td><td></td><td>日</td><td></td><td></td></tr>
+<tr><th>牙音</th><td>見</td><td>溪</td><td>羣</td><td>疑</td><td></td><td></td></tr>
+<tr><th rowspan="2">喉音</th><td>影</td><td></td><td></td><td>云</td><td>曉</td><td>匣</td></tr>
+<tr><td></td><td></td><td></td><td>以</td><td></td><td></td></tr>
+</tbody>
+</table>
+
+.. hint::
+
+    曉母為全清，云母為次濁。
+
+    組未涵蓋來日以母，定為 `None`。
+
+    不要與中古後期三十六字母混淆。
+    
+    中古後期三十六字母：
+
+    <table class="big-table">
+    <tbody>
+    <tr><th></th><th>全清</th><th>次清</th><th>全濁</th><th>次濁</th><th>全清</th><th>全濁</th></tr>
+    <tr><th rowspan="2">脣音</th><td>幫</td><td>滂</td><td>並</td><td>明</td><td></td><td></td></tr>
+    <tr><td>非</td><td>敷</td><td>奉</td><td>微</td><td></td><td></td></tr>
+    <tr><th rowspan="3">舌音</th><td>端</td><td>透</td><td>定</td><td>泥</td><td></td><td></td></tr>
+    <tr><td>知</td><td>徹</td><td>澄</td><td>孃</td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td>來</td><td></td><td></td></tr>
+    <tr><th rowspan="3">齒音</th><td>精</td><td>清</td><td>從</td><td></td><td>心</td><td>邪</td></tr>
+    <tr><td>照</td><td>穿</td><td>牀</td><td></td><td>審</td><td>禪</td></tr>
+    <tr><td></td><td></td><td></td><td>日</td><td></td><td></td></tr>
+    <tr><th>牙音</th><td>見</td><td>溪</td><td>羣</td><td>疑</td><td></td><td></td></tr>
+    <tr><th>喉音</th><td>影</td><td></td><td></td><td>喻</td><td>曉</td><td>匣</td></tr>
+    </tbody>
+    </table>
+
+    區別如下：
+
+    - 幫滂並明在三等輕脣韻前分化為非敷奉微
+    - 云母和以母合流為喻母
+    - 莊章組合流為照組
+
+### 呼
+
+取值：開、合、`None`。其中 `None` 表示開合中立。
+
+.. hint::
+
+    脣音的開合必為 `None`。
+
+韻對呼的約束條件如下：
+
+- 開合皆有的韻：支脂微齊祭泰佳皆夬廢眞元寒刪山仙先歌麻陽唐庚耕清青蒸登
+- 必為開口的韻：咍痕欣嚴之魚臻蕭宵肴豪侯侵覃談鹽添咸銜
+- 必為合口的韻：灰魂文凡
+- 開合中立的韻：東冬鍾江虞模尤幽
+
+.. hint::
+
+    不要與韻圖的開合混淆。
+
+    首先，對於脣音、開合中立的韻，呼的取值為 `None`。其次，韻圖存在誤標開合的情況。如《韻鏡》第四轉「內轉第四開合」當為「內轉第四開」。
+
+### 等
+
+取值：一、二、三、四。
+
+.. hint::
+
+    韻書的等與韻圖的等存在區別：
+
+    1. 韻圖將重紐A類字置於四等，實際為三等
+    2. 三等韻的莊組字列在二等
+    3. 三等韻的精組字列在四等
+    4. 三等的幽韻列在四等
+
+- 一等韻：冬模泰咍灰痕魂寒豪唐登侯覃談
+- 二等韻：江佳皆夬刪山肴耕咸銜
+- 三等韻：鍾支脂之微魚虞祭廢眞臻欣元文仙宵陽清蒸尤幽侵鹽嚴凡
+- 四等韻：齊先蕭青添
+- 一三等韻：東歌
+- 二三等韻：麻庚
+
+.. hint::
+
+    母對等沒有硬性約束條件，因為存在音韻地位特殊的小韻（即「無音有字」）。
+
+    陳澧《切韻考》：等之云者，當主乎韻，不當主乎聲。
+
+### 重紐
+
+取值：`None`、重紐A類、重紐B類。
+
+- 重紐母：幫滂並明見溪羣疑影曉
+- 重紐韻：支脂祭眞仙宵清侵鹽
+
+當聲紐為重紐母，且韻為重紐韻時，重紐必須非 `None`，反之亦然。
+
+注意：
+
+清韻重紐非 `None` 時，取重紐A類。
+
+### 韻、攝
+
+- 通：東冬鍾
+- 江：江
+- 止：支脂之微
+- 遇：魚虞模
+- 蟹：齊佳皆灰咍祭泰夬廢
+- 臻：眞諄臻文欣元魂痕
+- 山：寒桓刪山先仙
+- 效：蕭宵肴豪
+- 果：歌戈
+- 假：麻
+- 宕：唐陽
+- 梗：庚耕清青
+- 曾：登蒸
+- 流：侯尤幽
+- 深：侵
+- 咸：覃談鹽添咸銜嚴凡
+
+.. hint::
+
+    元韻
+
+    《廣韻》沒有諄桓戈韻，分別併入眞寒歌韻。
+
+    TODO: 殷韻。
+
+### 聲
+
+取值：平、上、去、入；仄、舒。其中仄表示上去入聲，舒表示平上去聲。
+'''
+
 import re
 from typing import Optional
 
@@ -12,7 +165,9 @@ from ._拓展音韻屬性 import 母到清濁, 母到音, 母到組, 韻到攝
 解析音韻描述 = re.compile('([%s])([%s]?)([%s]?)([%s]?)([%s])([%s])' % (常量.所有母, 常量.所有呼, 常量.所有等, 常量.所有重紐, 常量.所有韻, 常量.所有聲))
 
 class 音韻地位:
-    '''切韻音系音韻地位。'''
+    '''
+    切韻音系音韻地位。
+    '''
 
     def __init__(self, 母, 呼, 等, 重紐, 韻, 聲):
         音韻地位.驗證(母, 呼, 等, 重紐, 韻, 聲)
