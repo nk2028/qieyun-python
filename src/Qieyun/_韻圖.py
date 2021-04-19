@@ -45,7 +45,7 @@ def _讀取資料():
     讀取韻書與韻圖資料，將韻書的小韻對應到韻圖等字頭。
     此函式執行後，結果將存儲於 `d廣韻小韻號2韻圖出處` 中。
     '''
-    with open(path.join(HERE, 'hiunndu.csv'), encoding='utf-8') as f:
+    with open(path.join(HERE, 'rhyme_table.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
             資料名稱, 小韻號, 字頭, 轉號, 韻圖韻, 韻圖母位置, 韻圖母, 韻圖等, 音韻描述 = line.rstrip('\n').split(',') # pylint: disable=unused-variable

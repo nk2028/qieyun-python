@@ -70,7 +70,7 @@ def _讀取資料():
     '''
     TODO: documentation
     '''
-    with open(path.join(HERE, 'qieyun.csv'), encoding='utf-8') as f:
+    with open(path.join(HERE, 'rhyme_book.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
             資料名稱, 小韻號, 韻部原貌, 最簡描述, 反切覈校前, 反切, 字頭覈校前, 字頭, 釋義, 釋義補充, 圖片id = line.rstrip('\n').split(',') # pylint: disable=unused-variable

@@ -5,7 +5,8 @@ from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
-assert path.exists(path.join(here, 'src/Qieyun/qieyun.csv')), \
+assert path.exists(path.join(here, 'src/Qieyun/rhyme_book.csv')) \
+and path.exists(path.join(here, 'src/Qieyun/rhyme_table.csv')), \
     'Please run prepare.py first.'
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -40,7 +41,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     package_data={
-        'Qieyun': ['qieyun.csv', 'hiunndu.csv'],
+        'Qieyun': ['rhyme_book.csv', 'rhyme_table.csv'],
     },
     python_requires='>=3.6, <4',
     install_requires=['networkx>=2.5,<2.6'],

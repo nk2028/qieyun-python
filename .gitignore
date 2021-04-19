@@ -4,6 +4,6 @@ dist
 .pytest_cache
 __pycache__
 .vscode
-/src/Qieyun/qieyun.csv
-/src/Qieyun/hiunndu.csv
+/src/Qieyun/rhyme_book.csv
+/src/Qieyun/rhyme_table.csv
 /docs
