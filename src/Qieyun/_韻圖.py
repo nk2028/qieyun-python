@@ -5,7 +5,7 @@ import networkx as nx
 from os import path
 
 from .音韻地位 import 音韻地位
-from .書影 import 生成書影
+from ._書影 import 生成書影
 from .韻書 import d資料名稱_小韻號_編碼2字頭們
 
 HERE = path.abspath(path.dirname(__file__))
@@ -33,7 +33,7 @@ def 字頭_音韻地位2韻圖出處們(字頭, 當前音韻地位):
                 yield 韻圖出處
     return list(inner())
 
-def 讀取資料():
+def _讀取資料():
     '''
     讀取韻書與韻圖資料，將韻書的小韻對應到韻圖等字頭。
     此函式執行後，結果將存儲於 `d廣韻小韻號2韻圖出處` 中。
@@ -61,4 +61,4 @@ def 讀取資料():
                 '書影': 書影,
             })
 
-讀取資料()
+_讀取資料()

@@ -4,7 +4,7 @@ import re
 from typing import Optional
 
 from .常量 import 常量
-from .拓展音韻屬性 import 母到清濁, 母到音, 母到組, 韻到攝
+from ._拓展音韻屬性 import 母到清濁, 母到音, 母到組, 韻到攝
 
 編碼表 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 韻順序表 = '東_冬鍾江支脂之微魚虞模齊祭泰佳皆夬灰咍廢眞臻文欣元魂痕寒刪山仙先蕭宵肴豪歌_麻_陽唐庚_耕清青蒸登尤侯幽侵覃談鹽添咸銜嚴凡'

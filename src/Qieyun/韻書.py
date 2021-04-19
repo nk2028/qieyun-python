@@ -5,7 +5,7 @@ from os import path
 from typing import Optional
 
 from .音韻地位 import 音韻地位
-from .書影 import 生成書影
+from ._書影 import 生成書影
 
 HERE = path.abspath(path.dirname(__file__))
 
@@ -15,7 +15,7 @@ d編碼2廣韻字頭們 = defaultdict(dict)
 d字頭_編碼2韻書出處們 = defaultdict(list)
 d資料名稱_小韻號_編碼2字頭們 = defaultdict(dict)
 
-def 字頭2音韻地位_韻書出處們(字頭: str):
+def _字頭2音韻地位_韻書出處們(字頭: str):
     '''
     由字頭查出相應的音韻地位和解釋。
     '''
@@ -62,7 +62,7 @@ def iter音韻地位():
     for 編碼 in d編碼2字頭們:
         yield 音韻地位.from編碼(編碼)
 
-def 讀取資料():
+def _讀取資料():
     '''
     TODO: documentation
     '''
@@ -95,4 +95,4 @@ def 讀取資料():
             if 資料名稱 == '廣韻':
                 d編碼2廣韻字頭們[編碼][字頭] = None
 
-讀取資料()
+_讀取資料()

@@ -11,7 +11,7 @@ assert path.exists(path.join(here, 'src/Qieyun/qieyun.csv')), \
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-with open(path.join(here, 'src/Qieyun/version.py'), encoding='utf-8') as f:
+with open(path.join(here, 'src/Qieyun/_version.py'), encoding='utf-8') as f:
     exec(f.read())
 
 setup(
