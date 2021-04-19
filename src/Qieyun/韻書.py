@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+'''
+切韻系韻書資料上的操作。
+'''
+
 from collections import defaultdict, namedtuple
 from os import path
 from typing import Optional
@@ -14,6 +18,13 @@ d編碼2字頭們 = defaultdict(dict)
 d編碼2廣韻字頭們 = defaultdict(dict)
 d字頭_編碼2韻書出處們 = defaultdict(list)
 d資料名稱_小韻號_編碼2字頭們 = defaultdict(dict)
+
+def iter音韻地位():
+    '''
+    所有至少對應一個字頭的音韻地位。
+    '''
+    for 編碼 in d編碼2字頭們:
+        yield 音韻地位.from編碼(編碼)
 
 def _字頭2音韻地位_韻書出處們(字頭: str):
     '''
@@ -54,13 +65,6 @@ def 音韻地位2字頭_韻書出處們(當前音韻地位):
             '韻書出處們': d字頭_編碼2韻書出處們.get((字頭, 編碼), []),
         } for 字頭 in d編碼2字頭們.get(編碼, [])
     ]
-
-def iter音韻地位():
-    '''
-    所有至少對應一個字頭的音韻地位。
-    '''
-    for 編碼 in d編碼2字頭們:
-        yield 音韻地位.from編碼(編碼)
 
 def _讀取資料():
     '''

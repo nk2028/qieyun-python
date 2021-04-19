@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+'''
+早期韻圖資料上的操作。
+'''
+
 from collections import defaultdict
 import networkx as nx
 from os import path

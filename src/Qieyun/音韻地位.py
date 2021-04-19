@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 '''
+定義切韻音系音韻地位及相關操作。
+
 ## 音韻屬性
 
 ### 母、清濁、音、組
@@ -369,7 +371,7 @@ class 音韻地位:
 
         return 編碼表[母編碼] + 編碼表[韻編碼] + 編碼表[其他編碼]
 
-    def 屬於(self, s: str) -> bool:
+    def 屬於(self, 表達式: str) -> bool:
         '''
         判斷音韻地位是否符合給定的音韻表達式。
 
@@ -449,7 +451,7 @@ class 音韻地位:
 
             raise AssertionError('無此運算符：' + q)
 
-        return any(all(inner(q) for q in p.split(' ')) for p in s.split(' 或 '))
+        return any(all(inner(q) for q in p.split(' ')) for p in 表達式.split(' 或 '))
 
     def __eq__(self, that):
         if not isinstance(that, 音韻地位):
@@ -494,15 +496,15 @@ class 音韻地位:
             assert 等 in ('二', '三'), 'Unexpected 等: ' + repr(等)
 
     @staticmethod
-    def from編碼(s: str):
+    def from編碼(編碼: str):
         '''
         將音韻編碼轉換為音韻地位。
         '''
-        assert len(s) == 3, 'Invalid 編碼: ' + repr(s)
+        assert len(編碼) == 3, 'Invalid 編碼: ' + repr(編碼)
 
-        母編碼 = 編碼表.index(s[0])
-        韻編碼 = 編碼表.index(s[1])
-        其他編碼 = 編碼表.index(s[2])
+        母編碼 = 編碼表.index(編碼[0])
+        韻編碼 = 編碼表.index(編碼[1])
+        其他編碼 = 編碼表.index(編碼[2])
 
         呼編碼 = 其他編碼 >> 3
         重紐編碼 = (其他編碼 >> 2) & 0b1
