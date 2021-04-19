@@ -48,16 +48,16 @@ def _讀取資料():
     with open(path.join(HERE, 'hiunndu.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
-            小韻號, 字頭, 轉號, 韻圖韻, 韻圖母位置, 韻圖等, 韻圖母, 音韻描述 = line.rstrip('\n').split(',') # pylint: disable=unused-variable
+            資料名稱, 小韻號, 字頭, 轉號, 韻圖韻, 韻圖母位置, 韻圖母, 韻圖等, 音韻描述 = line.rstrip('\n').split(',') # pylint: disable=unused-variable
 
             當前音韻地位 = 音韻地位.from描述(音韻描述)
             編碼 = 當前音韻地位.編碼
 
-            縮略圖 = 生成書影('韻鏡（永祿本）', 轉號, 縮略圖=True)
-            書影 = 生成書影('韻鏡（永祿本）', 轉號)
+            縮略圖 = 生成書影(資料名稱, 轉號, 縮略圖=True)
+            書影 = 生成書影(資料名稱, 轉號)
 
             d編碼2韻圖出處們[編碼].append({
-                '資料名稱': '韻鏡（永祿本）',
+                '資料名稱': 資料名稱,
                 '韻圖韻': 韻圖韻,
                 '韻圖母位置': 韻圖母位置,
                 '韻圖母': 韻圖母,
