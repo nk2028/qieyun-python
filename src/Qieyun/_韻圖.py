@@ -12,6 +12,8 @@ from .音韻地位 import 音韻地位
 from ._書影 import 生成書影
 from .韻書 import d資料名稱_小韻號_編碼2字頭們
 
+from ._utils import 韻圖2切韻
+
 HERE = path.abspath(path.dirname(__file__))
 
 d編碼2字頭圖 = defaultdict(nx.Graph)
@@ -48,9 +50,11 @@ def _讀取資料():
     with open(path.join(HERE, 'rhyme_table.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
-            資料名稱, 小韻號, 字頭, 轉號, 韻圖韻, 韻圖母位置, 韻圖母, 韻圖等, 音韻描述 = line.rstrip('\n').split(',') # pylint: disable=unused-variable
+            資料名稱, 小韻號, 字頭, 轉號, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等 = line.rstrip('\n').split(',') # pylint: disable=unused-variable
 
-            當前音韻地位 = 音韻地位.from描述(音韻描述)
+            轉號 = int(轉號)
+
+            韻圖母, 當前音韻地位 = 韻圖2切韻(轉號, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等)
             編碼 = 當前音韻地位.編碼
 
             縮略圖 = 生成書影(資料名稱, 轉號, 縮略圖=True)
@@ -62,7 +66,7 @@ def _讀取資料():
                 '韻圖母位置': 韻圖母位置,
                 '韻圖母': 韻圖母,
                 '韻圖等': 韻圖等,
-                '韻圖聲': 當前音韻地位.聲,
+                '韻圖聲': 韻圖聲,
                 '對應韻圖字頭': 字頭,
                 '縮略圖': 縮略圖,
                 '書影': 書影,
