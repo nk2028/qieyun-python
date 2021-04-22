@@ -50,7 +50,7 @@ def _讀取資料():
     with open(path.join(HERE, 'rhyme_table.csv'), encoding='utf-8') as f:
         next(f) # skip header
         for line in f:
-            資料名稱, 小韻號, 字頭, 轉號, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等 = line.rstrip('\n').split(',') # pylint: disable=unused-variable
+            資料名稱, 字頭, 轉號, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等 = line.rstrip('\n').split(',')
 
             轉號 = int(轉號)
 
