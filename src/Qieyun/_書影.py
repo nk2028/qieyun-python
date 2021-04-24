@@ -26,6 +26,6 @@ def 生成書影(資料名稱, 圖片id, 縮略圖=False):
 
     if 資料名稱 == '韻鏡（古逸叢書本）':
         page = int(圖片id)
-        return f'https://cdn.jsdelivr.net/gh/nk2028/hiunnkyanq@main/hwanklukpuoon/{縮略圖}{page+9:02}.png'
+        return f'https://cdn.jsdelivr.net/gh/nk2028/hiunnkyanq@main/kuujitdzungsjvpuoon/{縮略圖}{page+9:02}.png'
 
     raise NotImplementedError('未收錄指定書影')
