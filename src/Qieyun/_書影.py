@@ -24,7 +24,7 @@ def 生成書影(資料名稱, 圖片id, 縮略圖=False):
         page = int(圖片id)
         return f'https://cdn.jsdelivr.net/gh/nk2028/hiunnkyanq@main/keakitpuoon/{縮略圖}{page+14:02}.jpg'
 
-    if 資料名稱 == '韻鏡（永祿本）':
+    if 資料名稱 == '韻鏡（古逸叢書本）':
         page = int(圖片id)
         return f'https://cdn.jsdelivr.net/gh/nk2028/hiunnkyanq@main/hwanklukpuoon/{縮略圖}{page+9:02}.png'
 
