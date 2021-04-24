@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from os import path
+from os import path, system
 from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
 
-assert path.exists(path.join(here, 'src/Qieyun/rhyme_book.csv')) \
-and path.exists(path.join(here, 'src/Qieyun/rhyme_table.csv')), \
-    'Please run prepare.py first.'
+if not path.exists(path.join(here, 'src/Qieyun/rhyme_book.csv')) \
+or not path.exists(path.join(here, 'src/Qieyun/rhyme_table.csv')):
+    system('python3 prepare.py')
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
