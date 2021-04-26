@@ -9,54 +9,54 @@ jobs:
   publish:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip
-    - name: Install packaging tools
-      run: pip install setuptools wheel twine
-    - name: Install pdoc
-      run: pip install pdoc3
-    - name: Prepare data
-      run: python prepare.py
-    - name: Install package
-      run: pip install .
-    - name: Build documentation
-      run: pdoc --html -o docs -f -c sort_identifiers=False Qieyun
-    - name: Publish
-      run: |
-        # Create a temporary directory
-        export temp_dir=`mktemp -d -p ~`
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+      - name: Install packaging tools
+        run: pip install setuptools wheel twine
+      - name: Install pdoc
+        run: pip install pdoc3
+      - name: Prepare data
+        run: python prepare.py
+      - name: Install package
+        run: pip install .
+      - name: Build documentation
+        run: pdoc --html -o docs -f -c sort_identifiers=False Qieyun
+      - name: Publish
+        run: |
+          # Create a temporary directory
+          export temp_dir=`mktemp -d -p ~`
 
-        (
-        # Preserve .git
-        mv .git $temp_dir
-        cd $temp_dir
+          (
+          # Preserve .git
+          mv .git $temp_dir
+          cd $temp_dir
 
-        # Switch branch
-        git fetch
-        git checkout gh-pages
-        git reset --hard gh-pages
-        )
+          # Switch branch
+          git fetch
+          git checkout gh-pages
+          git reset --hard gh-pages
+          )
 
-        (
-        # Move .git
-        mv docs/Qieyun/* $temp_dir
+          (
+          # Move .git
+          mv docs/Qieyun/* $temp_dir
 
-        # Go to the temporary directory
-        cd $temp_dir
+          # Go to the temporary directory
+          cd $temp_dir
 
-        # Set commit identity
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config user.name "github-actions[bot]"
+          # Set commit identity
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
 
-        # Publish
-        git add .
-        if [ -n "$(git status --porcelain)" ]; then
-          git commit -m "Publish `TZ='Asia/Hong_Kong' date`"
-          git push -f origin gh-pages
-        fi
-        )
+          # Publish
+          git add .
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Publish `TZ='Asia/Hong_Kong' date`"
+            git push -f origin gh-pages
+          fi
+          )

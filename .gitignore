@@ -3,7 +3,7 @@ dist
 .mypy_cache
 .pytest_cache
 __pycache__
-.vscode
 /src/Qieyun/rhyme_book.csv
 /src/Qieyun/rhyme_table.csv
+/build
 /docs
