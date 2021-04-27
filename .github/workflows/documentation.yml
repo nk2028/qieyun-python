@@ -33,8 +33,9 @@ jobs:
 
           (
           # Preserve .git
-          mv .git $temp_dir
-          cd $temp_dir
+          mkdir $temp_dir/temp
+          mv .git $temp_dir/temp
+          cd $temp_dir/temp
 
           # Switch branch
           git fetch
@@ -44,7 +45,10 @@ jobs:
 
           (
           # Move .git
+          mv $temp_dir/temp/.git $temp_dir
+          rm -rf $temp_dir/temp
           mv docs/Qieyun/* $temp_dir
+          mv LICENSE $temp_dir
 
           # Go to the temporary directory
           cd $temp_dir

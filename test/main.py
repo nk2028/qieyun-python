@@ -2,6 +2,7 @@
 
 import Qieyun
 
+
 def test1():
     '''
     測試 API 功能是否正常。
