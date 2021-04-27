@@ -7,8 +7,8 @@
 from collections import defaultdict
 import networkx as nx
 from os import path
+from QieyunEncoder import 音韻地位
 
-from .音韻地位 import 音韻地位
 from ._書影 import 生成書影
 from .韻書 import d資料名稱_小韻號_編碼2字頭們
 
@@ -29,11 +29,13 @@ for (資料名稱, 小韻號, 編碼), 字頭們 in d資料名稱_小韻號_編�
         for 字頭 in xs[1:]:
             字頭圖.add_edge(小韻首字, 字頭)
 
+
 def _字頭_音韻地位2韻圖出處們(字頭, 當前音韻地位):
     '''
     獲取字頭與音韻地位對應的所有韻圖出處。
     '''
     編碼 = 當前音韻地位.編碼
+
     def inner():
         for 韻圖出處 in d編碼2韻圖出處們.get(編碼, []):
             對應韻圖字頭 = 韻圖出處['對應韻圖字頭']
@@ -42,15 +44,17 @@ def _字頭_音韻地位2韻圖出處們(字頭, 當前音韻地位):
                 yield 韻圖出處
     return list(inner())
 
+
 def _讀取資料():
     '''
     讀取韻書與韻圖資料，將韻書的小韻對應到韻圖等字頭。
     此函式執行後，結果將存儲於 `d廣韻小韻號2韻圖出處` 中。
     '''
     with open(path.join(HERE, 'rhyme_table.csv'), encoding='utf-8') as f:
-        next(f) # skip header
+        next(f)  # skip header
         for line in f:
-            資料名稱, 字頭, 轉號, 韻圖開合修正後, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等 = line.rstrip('\n').split(',')
+            資料名稱, 字頭, 轉號, 韻圖開合修正後, 韻圖母位置, 韻圖聲, 韻圖韻, 韻圖等 = line.rstrip(
+                '\n').split(',')
 
             轉號 = int(轉號)
 
@@ -72,5 +76,6 @@ def _讀取資料():
                 '縮略圖': 縮略圖,
                 '書影': 書影,
             })
+
 
 _讀取資料()
