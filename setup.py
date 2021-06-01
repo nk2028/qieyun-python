@@ -41,7 +41,7 @@ setup(
         'Qieyun': ['rhyme_book.csv', 'rhyme_table.csv'],
     },
     python_requires='>=3.6, <4',
-    install_requires=['qieyun-encoder>=0.4,<0.5', 'networkx>=2.5,<2.6'],
+    install_requires=['qieyun-encoder>=0.4.2,<0.5', 'networkx>=2.5,<2.6'],
     entry_points={},
     project_urls={
         'Bug Reports': 'https://github.com/nk2028/qieyun-python/issues',
