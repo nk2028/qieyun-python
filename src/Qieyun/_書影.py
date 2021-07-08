@@ -12,7 +12,7 @@ def 生成書影(資料名稱, 圖片id, 縮略圖=False):
 
     if 資料名稱 == '王一':
         page = int(圖片id)
-        return f'https://cethiunn-1305783649.cos.ap-guangzhou.myqcloud.com/P2011/{縮略圖}{page:04}.jpg'
+        return f'https://cethiunn-1305783649.cos.ap-guangzhou.myqcloud.com/王一/{縮略圖}{page:04}.jpg'
 
     if 資料名稱 == '廣韻':
         match = re.fullmatch(r'([^0-9]+)([0-9]+)([^0-9]+)', 圖片id)
